@@ -9,15 +9,15 @@ class App extends Component {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
-            Edit <code>src/App.js</code> and save to reload.
+            Prococo radio
           </p>
           <a
             className="App-link"
-            href="https://reactjs.org"
+            href="https://open.spotify.com/user/12134256895/playlist/62tndRYihkE8fGyVDu3VhY?si=KCM8ei8OTLych230raywLw"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Learn React
+            Abrir playlist
           </a>
         </header>
       </div>

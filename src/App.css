@@ -17,21 +17,46 @@
   color: #61dafb;
 }
 
-.App-body {
+.Prococo {
   height: 80vh;
   color: white;
   background-color: #282c34;
 }
 
-.App-body div {
+.Prococo div {
   margin-bottom: 20px;
 }
 
-.App-body img {
+.Prococo img {
   height: 350px;
 }
 
-.App-body button {
+.Prococo button {
   display: block;
   margin: 0 auto;
+}
+
+.Prococo .time {
+  width: 50px;
+}
+
+.Prococo .progress {
+  border: 1px solid #eee;
+  height: 20px;
+  width: 230px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.Prococo .progress-bar {
+  background-color: #eee;
+  height: 100%;
+  width: 0%;
+}
+
+.Prococo .flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
 }

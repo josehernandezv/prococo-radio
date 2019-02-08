@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
+// import Script from 'react-load-script';
 import './App.css';
-
 import queryString from 'query-string'
-
 import SpotifyWebApi from 'spotify-web-api-node';
 const spotifyApi = new SpotifyWebApi();
 
@@ -11,7 +10,6 @@ class App extends Component {
     super();
     const params = this.getHashParams();
     const token = params.access_token;
-    console.log(params);
     if (token) {
       spotifyApi.setAccessToken(token);
     }
@@ -23,10 +21,14 @@ class App extends Component {
       client_id: '9638f8f3c3574c82b9b92e1003f7f8b9',
       client_secret: '78eaa2127b4b4a55bb313e202443d0cf',
       redirect_uri: 'http://localhost:3000/callback',
-      scope: 'user-read-private user-read-email user-read-playback-state streaming app-remote-control playlist-read-collaborative'
+      scope: 'user-read-private user-read-email user-read-playback-state streaming app-remote-control playlist-read-collaborative',
+      percentage: 0,
+      progress: 0,
+      duration: 0
     };
     this.getNowPlaying = this.getNowPlaying.bind(this);
     this.getDevices = this.getDevices.bind(this);
+    this.calcPercentage = this.calcPercentage.bind(this);
   }
 
   componentDidMount() {
@@ -44,8 +46,17 @@ class App extends Component {
       window.location.href = query;
     }
 
+    this.intervalID = setInterval(
+      () => this.progressBar(),
+      1000
+    );
+
     this.getNowPlaying();
     this.getDevices();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
   }
 
   generateRandomString(length) {
@@ -142,6 +153,30 @@ class App extends Component {
     }, 500);
   }
 
+  calcPercentage(data) {
+    return (data.body.progress_ms * 100 / data.body.item.duration_ms);
+  }
+
+  convertMs(time){
+    return new Date(time).toTimeString().replace(/.*(\d{2}:\d{2}).*/, "$1");
+  }
+
+  progressBar() {
+    spotifyApi.getMyCurrentPlaybackState()
+      .then((response) => {
+        console.log(response);
+        this.setState({
+          percentage: this.calcPercentage(response),
+          nowPlaying: {
+            name: response.body.item.name,
+            albumArt: response.body.item.album.images[0].url
+          },
+          progress: this.convertMs(response.body.progress_ms),
+          duration: this.convertMs(response.body.item.duration_ms)
+        });
+      })
+  }
+
   render() {
     return (
       <div className="App">
@@ -149,17 +184,27 @@ class App extends Component {
           <p>
             Prococo radio
           </p>
+          {/* <Script
+            url="https://sdk.scdn.co/spotify-player.js"
+          /> */}
         </header>
-        <body className="App-body">
+        <div className="Prococo">
           <a href='http://localhost:3000/login' className="App-link"> Login to Spotify </a>
           <div>
             Now Playing: { this.state.nowPlaying.name }
           </div>
           <div>
-            <img src={ this.state.nowPlaying.albumArt }/>
+            <img alt={ this.state.nowPlaying.name } src={ this.state.nowPlaying.albumArt }/>
           </div>
           <div>
             Device: { this.state.devices.name }
+          </div>
+          <div className="flex">
+            <div className="time">{ this.state.progress }</div>
+            <div className="progress">
+              <div className="progress-bar" style={{ width: `${this.state.percentage}%` }}></div>
+            </div>
+            <div className="time">{ this.state.duration }</div>
           </div>
           { this.state.loggedIn &&
             <button onClick={() => this.seek(0)}>
@@ -181,7 +226,7 @@ class App extends Component {
               Next
             </button>
           }
-        </body>
+        </div>
       </div>
     );
   }

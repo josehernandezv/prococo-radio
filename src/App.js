@@ -71,7 +71,7 @@ class App extends Component {
   }
 
   getNowPlaying() {
-    spotifyApi.getMyCurrentPlayingTrack()
+    spotifyApi.getMyCurrentPlaybackState()
       .then((response) => {
         console.log(response);
 
@@ -115,7 +115,7 @@ class App extends Component {
   }
 
   playPause() {
-    spotifyApi.getMyCurrentPlayingTrack()
+    spotifyApi.getMyCurrentPlaybackState()
       .then((response) => {
         console.log(response);
         if(!response.body.is_playing) {

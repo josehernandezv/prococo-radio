@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+const PROCOCO_ID = '62tndRYihkE8fGyVDu3VhY';
+
 class App extends Component {
 
   state = {
@@ -15,6 +17,9 @@ class App extends Component {
     playing: false,
     position: 0,
     duration: 0,
+    //
+    songs: [],
+    playlist: null,
   }
   
   componentDidMount() {
@@ -75,6 +80,7 @@ class App extends Component {
       console.log("Let the music play on!");
       await this.setState({ deviceId: device_id });
       this.transferPlaybackHere();
+      this.fetchPlayList();
     });
   }
 
@@ -130,6 +136,38 @@ class App extends Component {
     });
   }
 
+  fetchPlayList = () => {
+    const { token } = this.state;
+    fetch("https://api.spotify.com/v1/playlists/" + PROCOCO_ID, {
+      headers: {
+        authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }).then(res => res.json())
+    .then(data => {
+      this.setState({ playlist: data });
+      console.log(data)
+    });
+  }
+
+  playSong = uri => {
+    console.log(uri)
+    const { deviceId, token } = this.state;
+    fetch("https://api.spotify.com/v1/me/player/play?device_id=" + deviceId, {
+      method: "PUT",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        "context_uri": "spotify:playlist:" + PROCOCO_ID,
+        "offset": {
+          "uri": uri
+        }
+      }),
+    });
+  }
+
   render() {
     const {
       token,
@@ -141,17 +179,27 @@ class App extends Component {
       position,
       duration,
       playing,
+      playlist
     } = this.state;
+
+    let songs = null;
+    if (playlist) {
+      songs = (
+        <ul>
+          { playlist.tracks.items.map(({track}) => {
+            // console.log(item)
+            return (
+              <li key={ track.id } onClick={() => this.playSong(track.uri) }>{ track.name }</li>
+            )
+          })}
+        </ul>
+      )
+    }
   
     return (
       <div className="App">
         <div className="App-header">
-          <h2>Now Playing</h2>
-          <p>A Spotify Web Playback API Demo.</p>
-        </div>
-  
         {error && <p>Error: {error}</p>}
-  
         {loggedIn ?
         (<div>
           <p>Artist: {artistName}</p>
@@ -162,6 +210,7 @@ class App extends Component {
             <button onClick={() => this.onPlayClick()}>{playing ? "Pause" : "Play"}</button>
             <button onClick={() => this.onNextClick()}>Next</button>
           </p>
+          { songs }
         </div>)
         :
         (<div>
@@ -179,6 +228,7 @@ class App extends Component {
           </p>
         </div>)
         }
+        </div>
       </div>
     );
   }

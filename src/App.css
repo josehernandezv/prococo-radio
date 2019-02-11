@@ -30,3 +30,19 @@
     transform: rotate(360deg);
   }
 }
+
+ul {
+  list-style-type: none;
+}
+
+li {
+  width: 100%;
+  border: 1px solid black;
+  padding: 10px;
+  font-size: 16px;
+}
+
+li:hover {
+  background-color: #c4fbda;
+  cursor: pointer;
+}

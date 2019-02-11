@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import queryString from 'query-string';
+
 const PROCOCO_ID = '62tndRYihkE8fGyVDu3VhY';
 
 class App extends Component {
@@ -14,27 +16,62 @@ class App extends Component {
     trackName: "Track Name",
     artistName: "Artist Name",
     albumName: "Album Name",
+    albumArt: "",
     playing: false,
     position: 0,
     duration: 0,
-    //
     songs: [],
     playlist: null,
+    clientId: "9638f8f3c3574c82b9b92e1003f7f8b9",
+    redirectUri: "",
   }
   
   componentDidMount() {
     this.playerCheckInterval = null;
+
+    setTimeout(() => {
+      this.handleLogin();
+    }, 500);
+
+    const params = this.getHashParams();
+
+    if(params.access_token) {
+      this.setState({ token: params.access_token });
+    }
   }
 
   componentWillUnmount() {
-    clearInterval(this.playerCheckInterval)
+    clearInterval(this.playerCheckInterval);
   }
 
   handleLogin = () => {
+    console.log(this.state);
     if (this.state.token !== "") {
       this.setState({ loggedIn: true });
       // check every second for the player.
       this.playerCheckInterval = setInterval(this.checkForPlayer, 1000);
+    } else {
+      let uri = window.location.origin;
+      this.setState({ redirectUri: uri.concat("/callback") });
+
+      const scopes = [
+        'streaming',
+        'user-read-birthdate',
+        'user-read-private',
+        'user-modify-playback-state',
+        'user-read-email'
+      ];
+
+      let query = 'https://accounts.spotify.com/authorize?' +
+      queryString.stringify({
+        response_type: 'token',
+        client_id: this.state.clientId,
+        scope: scopes.join(' '),
+        redirect_uri: uri.concat("/callback"),
+        state: this.generateRandomString(16)
+      });
+      
+      window.location.href = query;
     }
   }
 
@@ -92,8 +129,10 @@ class App extends Component {
         position,
         duration,
       } = state.track_window;
+      console.log(currentTrack);
       const trackName = currentTrack.name;
       const albumName = currentTrack.album.name;
+      const albumArt = currentTrack.album.images[2].url;
       const artistName = currentTrack.artists
         .map(artist => artist.name)
         .join(", ");
@@ -103,6 +142,7 @@ class App extends Component {
         duration,
         trackName,
         albumName,
+        albumArt,
         artistName,
         playing
       });
@@ -168,6 +208,30 @@ class App extends Component {
     });
   }
 
+  generateRandomString(length) {
+    let text = '';
+    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (let i = 0; i < length; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  }
+
+  getHashParams() {
+    let hashParams = window.location.hash
+      .substring(1)
+      .split('&')
+      .reduce(function (initial, item) {
+        if (item) {
+          var parts = item.split('=');
+          initial[parts[0]] = decodeURIComponent(parts[1]);
+        }
+        return initial;
+      }, {});
+    return hashParams;
+  }
+
   render() {
     const {
       token,
@@ -175,6 +239,7 @@ class App extends Component {
       artistName,
       trackName,
       albumName,
+      albumArt,
       error,
       position,
       duration,
@@ -185,7 +250,7 @@ class App extends Component {
     let songs = null;
     if (playlist) {
       songs = (
-        <ul>
+        <ul className="playlist">
           { playlist.tracks.items.map(({track}) => {
             // console.log(item)
             return (
@@ -202,6 +267,7 @@ class App extends Component {
         {error && <p>Error: {error}</p>}
         {loggedIn ?
         (<div>
+          <img alt={trackName} src={albumArt}/>
           <p>Artist: {artistName}</p>
           <p>Track: {trackName}</p>
           <p>Album: {albumName}</p>
@@ -214,17 +280,8 @@ class App extends Component {
         </div>)
         :
         (<div>
-          <p className="App-intro">
-            Enter your Spotify access token. Get it from{" "}
-            <a href="https://beta.developer.spotify.com/documentation/web-playback-sdk/quick-start/#authenticating-with-spotify">
-              here
-            </a>.
-          </p>
           <p>
-            <input type="text" value={token} onChange={e => this.setState({ token: e.target.value })} />
-          </p>
-          <p>
-            <button onClick={() => this.handleLogin()}>Go</button>
+            Loading...
           </p>
         </div>)
         }

@@ -47,4 +47,26 @@ li {
 li:hover {
   background-color: #c4fbda;
   cursor: pointer;
+  color: #282c34;
+}
+
+.progress-bar {
+  width: 320px;
+  margin: 0 auto;
+}
+
+.progress {
+  width: 100%;
+}
+
+.start-time, .end-time {
+  font-size: 14px;
+}
+
+.start-time {
+  float: left;
+}
+
+.end-time {
+  float: right;
 }

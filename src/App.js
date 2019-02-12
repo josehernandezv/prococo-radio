@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 import queryString from 'query-string';
@@ -24,10 +23,13 @@ class App extends Component {
     playlist: null,
     clientId: "9638f8f3c3574c82b9b92e1003f7f8b9",
     redirectUri: "",
+    refresh: 100,
+    progress: 0
   }
   
   componentDidMount() {
     this.playerCheckInterval = null;
+    this.statePollingInterval = null;
 
     setTimeout(() => {
       this.handleLogin();
@@ -42,6 +44,7 @@ class App extends Component {
 
   componentWillUnmount() {
     clearInterval(this.playerCheckInterval);
+    clearInterval(this.statePollingInterval);
   }
 
   handleLogin = () => {
@@ -50,6 +53,7 @@ class App extends Component {
       this.setState({ loggedIn: true });
       // check every second for the player.
       this.playerCheckInterval = setInterval(this.checkForPlayer, 1000);
+      this.startStatePolling();
     } else {
       let uri = window.location.origin;
       this.setState({ redirectUri: uri.concat("/callback") });
@@ -93,6 +97,22 @@ class App extends Component {
     }
   }
 
+  startStatePolling = () => {
+    this.statePollingInterval = setInterval(async () => {
+      let state = null;
+      if(this.player) {
+        state = await this.player.getCurrentState();
+      }
+      if(state !== null) {
+        await this.setState({ 
+          position: state.position, 
+          duration: state.duration,
+          progress: this.calcPercentage(state)
+        });
+      }
+    }, this.state.refresh || 100);
+  }
+
   createEventHandlers = () => {
     this.player.on('initialization_error', e => { console.error(e); });
     this.player.on('authentication_error', e => {
@@ -125,9 +145,7 @@ class App extends Component {
     // if we're no longer listening to music, we'll get a null state.
     if (state !== null) {
       const {
-        current_track: currentTrack,
-        position,
-        duration,
+        current_track: currentTrack
       } = state.track_window;
       console.log(currentTrack);
       const trackName = currentTrack.name;
@@ -138,8 +156,6 @@ class App extends Component {
         .join(", ");
       const playing = !state.paused;
       this.setState({
-        position,
-        duration,
         trackName,
         albumName,
         albumArt,
@@ -232,9 +248,18 @@ class App extends Component {
     return hashParams;
   }
 
+  convertMs = (time) => {
+    if(time) {
+      return new Date(time).toTimeString().replace(/.*(\d{2}:\d{2}).*/, "$1");
+    }
+  }
+
+  calcPercentage = (state) => {
+    return (state.position * 100 / state.duration);
+  }
+
   render() {
     const {
-      token,
       loggedIn,
       artistName,
       trackName,
@@ -243,6 +268,7 @@ class App extends Component {
       error,
       position,
       duration,
+      progress,
       playing,
       playlist
     } = this.state;
@@ -271,6 +297,11 @@ class App extends Component {
           <p>Artist: {artistName}</p>
           <p>Track: {trackName}</p>
           <p>Album: {albumName}</p>
+          <div className="progress-bar">
+            <progress className="progress" value={progress} max="100"></progress>
+            <span className="start-time">{this.convertMs(position)}</span>
+            <span className="end-time">{this.convertMs(duration)}</span>
+          </div>
           <p>
             <button onClick={() => this.onPrevClick()}>Previous</button>
             <button onClick={() => this.onPlayClick()}>{playing ? "Pause" : "Play"}</button>

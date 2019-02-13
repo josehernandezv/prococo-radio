@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-
+import Button from '@material-ui/core/Button';
 import queryString from 'query-string';
 
 const PROCOCO_ID = '62tndRYihkE8fGyVDu3VhY';
@@ -23,7 +23,7 @@ class App extends Component {
     playlist: null,
     clientId: "9638f8f3c3574c82b9b92e1003f7f8b9",
     redirectUri: "",
-    refresh: 100,
+    refresh: 1000,
     progress: 0
   }
   
@@ -110,7 +110,7 @@ class App extends Component {
           progress: this.calcPercentage(state)
         });
       }
-    }, this.state.refresh || 100);
+    }, this.state.refresh || 1000);
   }
 
   createEventHandlers = () => {
@@ -147,10 +147,13 @@ class App extends Component {
       const {
         current_track: currentTrack
       } = state.track_window;
-      console.log(currentTrack);
+      // console.log(currentTrack);
       const trackName = currentTrack.name;
       const albumName = currentTrack.album.name;
-      const albumArt = currentTrack.album.images[2].url;
+      let albumArt = currentTrack.album.images[0].url;
+      if(currentTrack.album.images[2]) {
+        albumArt = currentTrack.album.images[2].url;
+      }
       const artistName = currentTrack.artists
         .map(artist => artist.name)
         .join(", ");
@@ -194,15 +197,38 @@ class App extends Component {
 
   fetchPlayList = () => {
     const { token } = this.state;
+    let totalPlaylist = null;
+    let totalTracks = 0;
+
     fetch("https://api.spotify.com/v1/playlists/" + PROCOCO_ID, {
       headers: {
         authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-    }).then(res => res.json())
+    })
+    .then(res => res.json())
     .then(data => {
-      this.setState({ playlist: data });
-      console.log(data)
+      totalPlaylist = data;
+      totalTracks = data.tracks.total;
+      let limit = data.tracks.limit;
+      for(let i = limit; i < totalTracks; i += limit){
+        fetch("https://api.spotify.com/v1/playlists/" + PROCOCO_ID + "/tracks?offset=" + i + "&limit=100", {
+          headers: {
+            authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        })
+        .then(res => res.json())
+        .then(data => {
+          if(data.items) {
+            let newSongs = [...totalPlaylist.tracks.items, ...data.items]
+            totalPlaylist.tracks.items = newSongs;
+          }
+        });
+      }
+      
+      console.log(totalPlaylist);
+      this.setState({ playlist: totalPlaylist });
     });
   }
 
@@ -224,7 +250,7 @@ class App extends Component {
     });
   }
 
-  generateRandomString(length) {
+  generateRandomString = (length) => {
     let text = '';
     let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -278,7 +304,6 @@ class App extends Component {
       songs = (
         <ul className="playlist">
           { playlist.tracks.items.map(({track}) => {
-            // console.log(item)
             return (
               <li key={ track.id } onClick={() => this.playSong(track.uri) }>{ track.name }</li>
             )
@@ -303,9 +328,9 @@ class App extends Component {
             <span className="end-time">{this.convertMs(duration)}</span>
           </div>
           <p>
-            <button onClick={() => this.onPrevClick()}>Previous</button>
-            <button onClick={() => this.onPlayClick()}>{playing ? "Pause" : "Play"}</button>
-            <button onClick={() => this.onNextClick()}>Next</button>
+            <Button variant="contained" color="primary" className="test-button" onClick={() => this.onPrevClick()}><i className="material-icons">skip_previous</i></Button>
+            <Button variant="contained" color="secondary" className="test-button" onClick={() => this.onPlayClick()}><i className="material-icons">{playing ? "pause" : "play_arrow"}</i></Button>
+            <Button variant="contained" color="primary" className="test-button" onClick={() => this.onNextClick()}><i className="material-icons">skip_next</i></Button>
           </p>
           { songs }
         </div>)

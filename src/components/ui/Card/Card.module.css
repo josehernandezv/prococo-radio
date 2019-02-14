@@ -1,0 +1,26 @@
+.container {
+    min-height: 160px;
+    padding: 24px;
+    margin-bottom: 32px;
+    cursor: pointer;
+    border-radius: 16px;
+    max-width: 350px;;
+}
+
+.container:hover {
+    background-position: right center;
+}
+
+.primary {
+    background-image: linear-gradient( 135deg, #43CBFF 10%, #9708CC 100%);
+}
+
+.secondary {
+    /* background-image: linear-gradient( 135deg, #92FFC0 10%, #002661 100%); */
+    background-image: linear-gradient( 135deg, #002661 10%, #92FFC0 100%);
+}
+
+.ternary {
+    /* background-image: linear-gradient( 135deg, #FEB692 10%, #EA5455 100%); */
+    background-image: linear-gradient( 135deg, #EA5455 10%, #FEB692 100%);
+}

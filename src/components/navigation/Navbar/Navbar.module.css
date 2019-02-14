@@ -1,0 +1,10 @@
+.logoIcon {
+    /* margin-left: -12px; */
+    margin-right: 20px
+}
+
+.grow {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+}

@@ -10,10 +10,10 @@ class Home extends Component {
             <Container>
                 <div className={ classes.header }>
                     <Typography variant="h3" gutterBottom>
-                    Home
+                    Estaciones
                     </Typography>
                     <Typography variant="subtitle1" gutterBottom>
-                        Escoge la playlist que quieres escuchar.
+                        Escoge la playlist que quieras escuchar. Puedes escuchar música sincronizada con tus amigos y familia.
                     </Typography>
                 </div>
                 <Card 

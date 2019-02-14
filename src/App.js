@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import queryString from 'query-string';
 
 const PROCOCO_ID = '62tndRYihkE8fGyVDu3VhY';
+// const PROCOCO_ID = '1zXO27kKYMS0drNPc3R6eD';
 
 class App extends Component {
 
@@ -147,7 +148,7 @@ class App extends Component {
       const {
         current_track: currentTrack
       } = state.track_window;
-      // console.log(currentTrack);
+      console.log(currentTrack);
       const trackName = currentTrack.name;
       const albumName = currentTrack.album.name;
       let albumArt = currentTrack.album.images[0].url;
@@ -211,29 +212,33 @@ class App extends Component {
       totalPlaylist = data;
       totalTracks = data.tracks.total;
       let limit = data.tracks.limit;
-      for(let i = limit; i < totalTracks; i += limit){
-        fetch("https://api.spotify.com/v1/playlists/" + PROCOCO_ID + "/tracks?offset=" + i + "&limit=100", {
+
+      for(let i = 100; i < totalTracks; i += limit){
+        let request = "https://api.spotify.com/v1/playlists/" + PROCOCO_ID + "/tracks?offset=" + i + "&limit=100";
+        fetch(request, {
           headers: {
             authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         })
-        .then(res => res.json())
-        .then(data => {
-          if(data.items) {
-            let newSongs = [...totalPlaylist.tracks.items, ...data.items]
+        .then(response => response.json())
+        .then(newData => {
+          if(newData.items) {
+            let newSongs = [...totalPlaylist.tracks.items, ...newData.items];
+            newSongs.sort(function(a, b){
+              if(a.added_at < b.added_at) { return -1; }
+              if(a.added_at > b.added_at) { return 1; }
+              return 0;
+            });
             totalPlaylist.tracks.items = newSongs;
           }
         });
       }
-      
-      console.log(totalPlaylist);
       this.setState({ playlist: totalPlaylist });
     });
   }
 
   playSong = uri => {
-    console.log(uri)
     const { deviceId, token } = this.state;
     fetch("https://api.spotify.com/v1/me/player/play?device_id=" + deviceId, {
       method: "PUT",

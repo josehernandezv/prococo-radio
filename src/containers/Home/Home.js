@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 import Card from '../../components/ui/Card';
 import classes from './Home.module.css';
 import Container from '../../components/ui/Container';
@@ -20,24 +21,28 @@ class Home extends Component {
                         Escoge la playlist que quieras escuchar. Puedes escuchar música sincronizada con tus amigos y familia.
                     </Typography>
                 </div>
-                <div className={ classes.cardsContainer }>
-                    <Link to={`/station?playlist=${ PROCOCO_ID }`}>
-                        <Card 
-                            title="Prococo"
-                            variant="primary"
-                        />
-                    </Link>
-                    <Link to={`/station?playlist=${ PROCOCO_FOREVER_ID }`}>
-                        <Card 
-                            title="Prococo forever"
-                            variant="secondary"
-                        />
-                    </Link>
+                <Grid container spacing={40} className={ classes.cardsContainer }>
+                    <Grid item xs={12} sm={6}>
+                        <Link to={`/station?playlist=${ PROCOCO_ID }`}>
+                            <Card 
+                                title="Prococo"
+                                variant="primary"
+                            />
+                        </Link>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <Link to={`/station?playlist=${ PROCOCO_FOREVER_ID }`}>
+                            <Card 
+                                title="Prococo forever"
+                                variant="secondary"
+                            />
+                        </Link>
+                    </Grid>
+                </Grid>
                     {/* <Card 
                         title="Youtube"
                         variant="ternary"
                     /> */}
-                </div>
             </Container>
         );
     }

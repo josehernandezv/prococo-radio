@@ -1,7 +1,10 @@
 .header {
     border-bottom: 1px solid #fff;
-    margin-bottom: 24px;
     padding: 24px 0;
+}
+
+.cardsContainer {
+    padding-top: 38px;
 }
 
 .cardsContainer a {

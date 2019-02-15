@@ -1,15 +1,22 @@
 .container {
     min-height: 160px;
     padding: 24px;
-    margin-bottom: 32px;
+    /* margin-bottom: 32px; */
     cursor: pointer;
     border-radius: 16px;
-    max-width: 350px;
+    /* max-width: 350px; */
+    width: 100%;
     transition: all 0.3s ease-out;  
     -webkit-transition: all 0.3s ease-out;  
     -moz-transition: all 0.3s ease-out;  
     -o-transition: all 0.3s ease-out;  
     text-decoration: none !important;
+}
+
+.container:before{
+    content: "";
+    display: block;
+    padding-top: 38%;
 }
 
 .container:hover {

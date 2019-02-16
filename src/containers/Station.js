@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 // import './App.css';
 import Button from '@material-ui/core/Button';
-import queryString from 'query-string';
-
-const PROCOCO_ID = '62tndRYihkE8fGyVDu3VhY';
-// const PROCOCO_ID = '1zXO27kKYMS0drNPc3R6eD';
 
 class Station extends Component {
 
@@ -22,62 +18,51 @@ class Station extends Component {
     duration: 0,
     songs: [],
     playlist: null,
-    clientId: "9638f8f3c3574c82b9b92e1003f7f8b9",
-    redirectUri: "",
     refresh: 1000,
-    progress: 0
+    progress: 0,
+    playlistId: 0
   }
   
   componentDidMount() {
     this.playerCheckInterval = null;
     this.statePollingInterval = null;
+    console.log('starting');
+
+    let params = new URLSearchParams(window.location.search);
+    let accessToken = params.get('token');
+    let playlist = params.get('playlist');
+
+    if(accessToken) {
+        this.setState({ token: accessToken });
+    }
+
+    if(playlist) {
+      this.setState({ playlistId: playlist });
+    }
 
     setTimeout(() => {
       this.handleLogin();
     }, 500);
 
-    const params = this.getHashParams();
-
-    if(params.access_token) {
-      this.setState({ token: params.access_token });
-    }
+    console.log(this.state);
   }
+
+  handleLogin = () => {
+    if (this.state.token !== "") {
+      this.setState({ loggedIn: true });
+      
+      // check every second for the player.
+      this.playerCheckInterval = setInterval(this.checkForPlayer, 1000);
+      this.startStatePolling();
+      this.props.history.replace("/station#");
+    } else {
+      this.props.history.replace("/#");
+    }
+  } 
 
   componentWillUnmount() {
     clearInterval(this.playerCheckInterval);
     clearInterval(this.statePollingInterval);
-  }
-
-  handleLogin = () => {
-    console.log(this.state);
-    if (this.state.token !== "") {
-      this.setState({ loggedIn: true });
-      // check every second for the player.
-      this.playerCheckInterval = setInterval(this.checkForPlayer, 1000);
-      this.startStatePolling();
-    } else {
-      let uri = window.location.origin;
-      this.setState({ redirectUri: uri.concat("/callback") });
-
-      const scopes = [
-        'streaming',
-        'user-read-birthdate',
-        'user-read-private',
-        'user-modify-playback-state',
-        'user-read-email'
-      ];
-
-      let query = 'https://accounts.spotify.com/authorize?' +
-      queryString.stringify({
-        response_type: 'token',
-        client_id: this.state.clientId,
-        scope: scopes.join(' '),
-        redirect_uri: uri.concat("/callback"),
-        state: this.generateRandomString(16)
-      });
-      
-      window.location.href = query;
-    }
   }
 
   checkForPlayer = () => {
@@ -197,11 +182,11 @@ class Station extends Component {
   }
 
   fetchPlayList = () => {
-    const { token } = this.state;
+    const { token, playlistId } = this.state;
     let totalPlaylist = null;
     let totalTracks = 0;
 
-    fetch("https://api.spotify.com/v1/playlists/" + PROCOCO_ID, {
+    fetch("https://api.spotify.com/v1/playlists/" + playlistId, {
       headers: {
         authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -214,7 +199,7 @@ class Station extends Component {
       let limit = data.tracks.limit;
 
       for(let i = 100; i < totalTracks; i += limit){
-        let request = "https://api.spotify.com/v1/playlists/" + PROCOCO_ID + "/tracks?offset=" + i + "&limit=100";
+        let request = "https://api.spotify.com/v1/playlists/" + playlistId + "/tracks?offset=" + i + "&limit=100";
         fetch(request, {
           headers: {
             authorization: `Bearer ${token}`,
@@ -239,7 +224,7 @@ class Station extends Component {
   }
 
   playSong = uri => {
-    const { deviceId, token } = this.state;
+    const { deviceId, token, playlistId } = this.state;
     fetch("https://api.spotify.com/v1/me/player/play?device_id=" + deviceId, {
       method: "PUT",
       headers: {
@@ -247,36 +232,12 @@ class Station extends Component {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "context_uri": "spotify:playlist:" + PROCOCO_ID,
+        "context_uri": "spotify:playlist:" + playlistId,
         "offset": {
           "uri": uri
         }
       }),
     });
-  }
-
-  generateRandomString = (length) => {
-    let text = '';
-    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-    for (let i = 0; i < length; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-  }
-
-  getHashParams() {
-    let hashParams = window.location.hash
-      .substring(1)
-      .split('&')
-      .reduce(function (initial, item) {
-        if (item) {
-          var parts = item.split('=');
-          initial[parts[0]] = decodeURIComponent(parts[1]);
-        }
-        return initial;
-      }, {});
-    return hashParams;
   }
 
   convertMs = (time) => {

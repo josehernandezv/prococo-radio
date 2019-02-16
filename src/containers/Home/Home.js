@@ -5,11 +5,37 @@ import Grid from '@material-ui/core/Grid';
 import Card from '../../components/ui/Card';
 import classes from './Home.module.css';
 import Container from '../../components/ui/Container';
+import * as SpotifyFunctions from '../../containers/Login.js'
 
 const PROCOCO_ID = '62tndRYihkE8fGyVDu3VhY';
 const PROCOCO_FOREVER_ID = '1zXO27kKYMS0drNPc3R6eD';
 
 class Home extends Component {
+
+    state = {
+        token: ""
+    }
+
+    componentDidMount() {
+        let accessToken = SpotifyFunctions.checkUrlForSpotifyAccessToken();
+
+        if(accessToken) {
+            this.setState({ token: accessToken });
+        }
+
+        setTimeout(() => {
+            this.handleLogin();
+        }, 500);
+    }
+
+    handleLogin = () => {
+        if (this.state.token === "") {
+            SpotifyFunctions.logInWithSpotify();
+        } else {
+            this.props.history.replace("/#");
+        }
+    }
+
     render() {
         return (
             <Container>
@@ -23,7 +49,7 @@ class Home extends Component {
                 </div>
                 <Grid container spacing={40} className={ classes.cardsContainer }>
                     <Grid item xs={12} sm={6}>
-                        <Link to={`/station?playlist=${ PROCOCO_ID }`}>
+                        <Link to={`/station?playlist=${ PROCOCO_ID }&token=${ this.state.token }`}>
                             <Card 
                                 title="Prococo"
                                 variant="primary"
@@ -31,7 +57,7 @@ class Home extends Component {
                         </Link>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <Link to={`/station?playlist=${ PROCOCO_FOREVER_ID }`}>
+                        <Link to={`/station?playlist=${ PROCOCO_FOREVER_ID }&token=${ this.state.token }`}>
                             <Card 
                                 title="Prococo forever"
                                 variant="secondary"

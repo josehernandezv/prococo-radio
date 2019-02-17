@@ -20,12 +20,10 @@ class Home extends Component {
         let accessToken = SpotifyFunctions.checkUrlForSpotifyAccessToken();
 
         if(accessToken) {
-            this.setState({ token: accessToken });
-        }
-
-        setTimeout(() => {
+            this.setState({ token: accessToken }, () => { this.handleLogin(); });
+        } else {
             this.handleLogin();
-        }, 500);
+        }
     }
 
     handleLogin = () => {

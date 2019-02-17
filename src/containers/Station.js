@@ -26,25 +26,20 @@ class Station extends Component {
   componentDidMount() {
     this.playerCheckInterval = null;
     this.statePollingInterval = null;
-    console.log('starting');
 
     let params = new URLSearchParams(window.location.search);
     let accessToken = params.get('token');
     let playlist = params.get('playlist');
 
     if(accessToken) {
-        this.setState({ token: accessToken });
+      this.setState({ token: accessToken }, () => { this.handleLogin(); });
+    } else {
+      this.handleLogin();
     }
 
     if(playlist) {
       this.setState({ playlistId: playlist });
     }
-
-    setTimeout(() => {
-      this.handleLogin();
-    }, 500);
-
-    console.log(this.state);
   }
 
   handleLogin = () => {
@@ -183,8 +178,6 @@ class Station extends Component {
 
   fetchPlayList = () => {
     const { token, playlistId } = this.state;
-    let totalPlaylist = null;
-    let totalTracks = 0;
 
     fetch("https://api.spotify.com/v1/playlists/" + playlistId, {
       headers: {
@@ -194,33 +187,42 @@ class Station extends Component {
     })
     .then(res => res.json())
     .then(data => {
-      totalPlaylist = data;
-      totalTracks = data.tracks.total;
-      let limit = data.tracks.limit;
-
-      for(let i = 100; i < totalTracks; i += limit){
-        let request = "https://api.spotify.com/v1/playlists/" + playlistId + "/tracks?offset=" + i + "&limit=100";
-        fetch(request, {
-          headers: {
-            authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+      this.setState(
+        { playlist: data },
+        () => {
+          this.fetchAllTracks();
         })
-        .then(response => response.json())
-        .then(newData => {
-          if(newData.items) {
-            let newSongs = [...totalPlaylist.tracks.items, ...newData.items];
-            newSongs.sort(function(a, b){
-              if(a.added_at < b.added_at) { return -1; }
-              if(a.added_at > b.added_at) { return 1; }
-              return 0;
-            });
-            totalPlaylist.tracks.items = newSongs;
-          }
-        });
-      }
-      this.setState({ playlist: totalPlaylist });
     });
+  }
+
+  fetchAllTracks = () => {
+    const { token, playlistId, playlist } = this.state;
+    let totalPlaylist = playlist;
+    let totalTracks = totalPlaylist.tracks.total;
+    let limit = totalPlaylist.tracks.limit;
+    
+    for(let i = 100; i < totalTracks; i += limit){
+      let request = "https://api.spotify.com/v1/playlists/" + playlistId + "/tracks?offset=" + i + "&limit=100";
+      fetch(request, {
+        headers: {
+          authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.items) {
+          let newSongs = [...totalPlaylist.tracks.items, ...data.items];
+          newSongs.sort(function(a, b){
+            if(a.added_at < b.added_at) { return -1; }
+            if(a.added_at > b.added_at) { return 1; }
+            return 0;
+          });
+          totalPlaylist.tracks.items = newSongs;
+        }
+        this.setState({ playlist: totalPlaylist });
+      });
+    }
   }
 
   playSong = uri => {

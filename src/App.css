@@ -8,14 +8,15 @@
 }
 
 .App-header {
+  align-items: center;
   background-color: #282c34;
-  min-height: 100vh;
+  color: white;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px 0;
 }
 
 .App-link {
@@ -37,22 +38,23 @@
 }
 
 li {
-  width: 100%;
-  box-sizing: border-box;
   border: 1px solid black;
-  padding: 10px;
+  box-sizing: border-box;
   font-size: 16px;
+  padding: 10px;
+  width: 350px;
+  margin: 0 auto;
 }
 
 li:hover {
   background-color: #c4fbda;
-  cursor: pointer;
   color: #282c34;
+  cursor: pointer;
 }
 
 .progress-bar {
-  width: 320px;
   margin: 0 auto;
+  width: 360px;
 }
 
 .progress {
@@ -73,4 +75,9 @@ li:hover {
 
 .test-button {
   margin: 0 10px;
+}
+
+img {
+  height: 320px;
+  width: 320px;
 }

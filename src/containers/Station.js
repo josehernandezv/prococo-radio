@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // import './App.css';
 import Button from '@material-ui/core/Button';
+import Player from '../components/music/Player';
 
 class Station extends Component {
 
@@ -149,15 +150,15 @@ class Station extends Component {
     }
   }
 
-  onPrevClick() {
+  onPrevClick = () => {
     this.player.previousTrack();
   }
   
-  onPlayClick() {
+  onPlayClick = () => {
     this.player.togglePlay();
   }
   
-  onNextClick() {
+  onNextClick = () => {
     this.player.nextTrack();
   }
 
@@ -283,6 +284,15 @@ class Station extends Component {
     return (
       <div className="App">
         <div className="App-header">
+        <Player 
+          artist={ artistName}
+          trackName={ trackName }
+          albumArt={ albumArt }
+          onPrevious={ this.onPrevClick }
+          onNext={ this.onNextClick }
+          onTogglePlay={ this.onPlayClick }
+          isPlaying={ playing }
+        />
         {error && <p>Error: {error}</p>}
         {loggedIn ?
         (<div>
@@ -295,11 +305,11 @@ class Station extends Component {
             <span className="start-time">{this.convertMs(position)}</span>
             <span className="end-time">{this.convertMs(duration)}</span>
           </div>
-          <p>
+          {/* <p>
             <Button variant="contained" color="primary" className="test-button" onClick={() => this.onPrevClick()}><i className="material-icons">skip_previous</i></Button>
             <Button variant="contained" color="secondary" className="test-button" onClick={() => this.onPlayClick()}><i className="material-icons">{playing ? "pause" : "play_arrow"}</i></Button>
             <Button variant="contained" color="primary" className="test-button" onClick={() => this.onNextClick()}><i className="material-icons">skip_next</i></Button>
-          </p>
+          </p> */}
           { songs }
         </div>)
         :

@@ -1,0 +1,104 @@
+.container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.bottomBar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+}
+
+.bottomBar > div {
+    flex-grow: 1;
+    flex-basis: 0
+}
+
+
+.centerControls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.centerControls button {
+    margin: 0px 12px;
+}
+
+.playButton {
+    /* -webkit-box-shadow: 0px 24px 30px 3px rgba(101,31,255,0.4);
+    -moz-box-shadow: 0px 24px 30px 3px rgba(101,31,255,0.4);
+    box-shadow: 0px 24px 30px 3px rgba(101,31,255,0.4); */
+    -webkit-box-shadow: 1px 30px 50px 10px rgba(101,31,255,0.4), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12);
+    -moz-box-shadow: 1px 30px 50px 10px rgba(101,31,255,0.4), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12);
+    box-shadow: 1px 30px 50px 10px rgba(101,31,255,0.4), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12);
+}
+
+.leftControls {
+    display: flex;
+    flex-direction: row;
+    text-align: start;
+}
+
+.leftControls img {
+    height: 42px;
+    width: 42px;
+    margin-right: 16px;
+    border-radius: 8px;
+}
+
+.rightControls {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+/* .expanded {
+    height: 100%;
+} */
+
+.expandButton {
+    transition: transform .4s;
+}
+
+.expanded .expandButton{
+    transform: rotate(180deg);
+}
+
+.fullScreenWrapper {
+    transition: height .4s;
+    height: 0px;
+}
+
+.expanded .fullScreenWrapper {
+    height: calc(100vh - 88px);
+}
+
+.fullScreen {
+    height: 100%;
+    position: relative;
+}
+
+.fullScreenContent {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    text-align: center;
+}
+
+.avatar {
+    width: 40%;
+    max-width: 400px;
+    height: auto;
+    margin-bottom: 32px;
+}

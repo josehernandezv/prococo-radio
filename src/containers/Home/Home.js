@@ -36,7 +36,7 @@ class Home extends Component {
 
     render() {
         return (
-            <Container>
+            <Container> 
                 <div className={ classes.header }>
                     <Typography variant="h3" gutterBottom>
                         Estaciones

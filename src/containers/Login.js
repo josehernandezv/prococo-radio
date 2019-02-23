@@ -18,10 +18,9 @@ export function logInWithSpotify() {
             client_id: clientId,
             scope: scopes.join(' '),
             redirect_uri: redirectUri,
-            state: generateRandomString(16),
+            state: [...Array(16)].map(() => Math.random().toString(36)[3]).join(''),
             show_dialog: 'false'
         });
-
     window.location = query;
 }
 
@@ -46,16 +45,5 @@ export function getHashParams() {
         }
         return initial;
       }, {});
-    console.log(hashParams);
     return hashParams;
-}
-
-function generateRandomString(length) {
-    let text = '';
-    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-    for (let i = 0; i < length; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
 }

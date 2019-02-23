@@ -52,8 +52,8 @@ const player = props => {
                     <IconButton aria-label="Previous" onClick={ toggleExpanded } className={ classes.expandButton }>
                         <Icon>keyboard_arrow_up</Icon>
                     </IconButton>
-                    <IconButton aria-label="Previous">
-                        <Icon>volume_up</Icon>
+                    <IconButton aria-label="Previous" onClick={ props.onSoundClick }>
+                        <Icon>{ props.isMute ? 'volume_off' : 'volume_up' }</Icon>
                     </IconButton>
                 </div>
             </div>

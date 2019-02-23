@@ -21,7 +21,8 @@ class Station extends Component {
     playlist: null,
     refresh: 1000,
     progress: 0,
-    playlistId: 0
+    playlistId: 0,
+    mute: false
   }
   
   componentDidMount() {
@@ -162,6 +163,16 @@ class Station extends Component {
     this.player.nextTrack();
   }
 
+  onSoundClick = () => {
+    if(this.state.mute) {
+      this.player.setVolume(1);
+      this.setState({ mute: false });
+    } else {
+      this.player.setVolume(0);
+      this.setState({ mute: true });
+    }
+  }
+
   transferPlaybackHere = () => {
     const { deviceId, token } = this.state;
     fetch("https://api.spotify.com/v1/me/player", {
@@ -265,7 +276,8 @@ class Station extends Component {
       duration,
       progress,
       playing,
-      playlist
+      playlist,
+      mute
     } = this.state;
 
     let songs = null;
@@ -292,6 +304,8 @@ class Station extends Component {
           onNext={ this.onNextClick }
           onTogglePlay={ this.onPlayClick }
           isPlaying={ playing }
+          onSoundClick={ this.onSoundClick }
+          isMute={ mute }
         />
         {error && <p>Error: {error}</p>}
         {loggedIn ?

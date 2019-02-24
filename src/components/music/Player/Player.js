@@ -55,7 +55,7 @@ const player = props => {
                     <IconButton aria-label="Mute" onClick={ props.onSoundClick }>
                         <Icon>{ props.isMute ? 'volume_off' : 'volume_up' }</Icon>
                     </IconButton>
-                    <IconButton aria-label="Shuffle" className={ props.isShuffle ? classes.shuffle : '' } onClick={ props.onShuffleClick }>
+                    <IconButton aria-label="Shuffle" color={ props.isShuffle ? 'primary' : 'default' } onClick={ props.onShuffleClick }>
                         <Icon>shuffle</Icon>
                     </IconButton>
                 </div>

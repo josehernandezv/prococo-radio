@@ -22,7 +22,8 @@ class Station extends Component {
     refresh: 1000,
     progress: 0,
     playlistId: 0,
-    mute: false
+    mute: false,
+    shuffle: false
   }
   
   componentDidMount() {
@@ -173,6 +174,22 @@ class Station extends Component {
     }
   }
 
+  onShuffleClick = () => {
+    const { token, shuffle } = this.state;
+    fetch("https://api.spotify.com/v1/me/player/shuffle?state=" + !shuffle, {
+      method: "PUT",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
+    if(shuffle) {
+      this.setState({ shuffle: false });
+    } else {
+      this.setState({ shuffle: true });
+    }
+  }
+
   transferPlaybackHere = () => {
     const { deviceId, token } = this.state;
     fetch("https://api.spotify.com/v1/me/player", {
@@ -277,7 +294,8 @@ class Station extends Component {
       progress,
       playing,
       playlist,
-      mute
+      mute,
+      shuffle
     } = this.state;
 
     let songs = null;
@@ -305,7 +323,9 @@ class Station extends Component {
           onTogglePlay={ this.onPlayClick }
           isPlaying={ playing }
           onSoundClick={ this.onSoundClick }
+          onShuffleClick={ this.onShuffleClick }
           isMute={ mute }
+          isShuffle={ shuffle }
         />
         {error && <p>Error: {error}</p>}
         {loggedIn ?

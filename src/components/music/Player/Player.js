@@ -44,16 +44,19 @@ const player = props => {
                         <Icon>{ props.isPlaying ? 'pause' : 'play_arrow' }</Icon>
                         {/* <Icon>pause</Icon> */}
                     </Fab>
-                    <IconButton aria-label="Previous" onClick={ props.onNext }>
+                    <IconButton aria-label="Next" onClick={ props.onNext }>
                         <Icon>skip_next</Icon>
                     </IconButton>
                 </div>
                 <div className={ classes.rightControls }>
-                    <IconButton aria-label="Previous" onClick={ toggleExpanded } className={ classes.expandButton }>
+                    <IconButton aria-label="Show" onClick={ toggleExpanded } className={ classes.expandButton }>
                         <Icon>keyboard_arrow_up</Icon>
                     </IconButton>
-                    <IconButton aria-label="Previous" onClick={ props.onSoundClick }>
+                    <IconButton aria-label="Mute" onClick={ props.onSoundClick }>
                         <Icon>{ props.isMute ? 'volume_off' : 'volume_up' }</Icon>
+                    </IconButton>
+                    <IconButton aria-label="Shuffle" className={ props.isShuffle ? classes.shuffle : '' } onClick={ props.onShuffleClick }>
+                        <Icon>shuffle</Icon>
                     </IconButton>
                 </div>
             </div>

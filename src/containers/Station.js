@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 // import './App.css';
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 import Player from '../components/music/Player';
 import Playlist from '../components/music/Playlist';
+import socketIOClient from "socket.io-client";
 
 class Station extends Component {
 
@@ -25,12 +26,17 @@ class Station extends Component {
     playlistId: 0,
     mute: false,
     shuffle: false,
-    currentTrack: null
+    currentTrack: null,
+    room: "",
+    socket: socketIOClient(window.location.hostname.concat(":3001"))
   }
-  
+
   componentDidMount() {
     this.playerCheckInterval = null;
     this.statePollingInterval = null;
+
+    const { socket } = this.state;
+    console.log(socket);
 
     let params = new URLSearchParams(window.location.search);
     let accessToken = params.get('token');
@@ -44,10 +50,39 @@ class Station extends Component {
 
     if(playlist) {
       this.setState({ playlistId: playlist });
+      socket.emit('new_room', playlist);
     }
+
+    socket.on('current_room', (room) => { 
+      console.log("Current Room");
+      console.log(room);
+      this.setState({ room: room }, () => {
+        socket.emit('join_room', socket.id, this.state.room);
+      });
+    });
+
+    socket.on('updated_room_list', (rooms) => {
+      console.log("Room List");
+      console.log(rooms);
+      // this.setState({rooms: rooms});
+    });
+
+    socket.on("receive_track", data => {
+      console.log(data);
+      if(this.player && this.state.playlistId === data.playlist) {
+        if(this.state.trackName !== data.track.name) {
+          console.log("changing song");
+          console.log(data);
+          this.changingSong(data.track.uri, data.position);
+          // this.player.seek(data.position);
+        }
+      }
+    });
   }
 
   handleLogin = () => {
+    // const { socket } = this.state;
+
     if (this.state.token !== "") {
       this.setState({ loggedIn: true });
       
@@ -84,12 +119,17 @@ class Station extends Component {
   }
 
   startStatePolling = () => {
+
+    // const { socket } = this.state;
+
     this.statePollingInterval = setInterval(async () => {
       let state = null;
+      
       if(this.player) {
         state = await this.player.getCurrentState();
       }
       if(state !== null) {
+        // console.log(state);
         await this.setState({ 
           position: state.position, 
           duration: state.duration,
@@ -128,12 +168,13 @@ class Station extends Component {
   }
 
   onStateChanged = (state) => {
+    const { socket } = this.state;
     // if we're no longer listening to music, we'll get a null state.
     if (state !== null) {
       const {
         current_track: currentTrack
       } = state.track_window;
-      console.log(currentTrack);
+      // console.log(currentTrack);
       const trackName = currentTrack.name;
       const albumName = currentTrack.album.name;
       let albumArt = currentTrack.album.images[0].url;
@@ -144,6 +185,13 @@ class Station extends Component {
         .map(artist => artist.name)
         .join(", ");
       const playing = !state.paused;
+
+      socket.emit('send_track', {
+        track: state.track_window.current_track,
+        position: state.position,
+        playlist: this.state.playlistId
+      });
+
       this.setState({
         trackName,
         albumName,
@@ -270,6 +318,26 @@ class Station extends Component {
         "offset": {
           "uri": uri
         }
+      }),
+    });
+  }
+
+  changingSong = (uri, position) => {
+    // console.log(uri);
+    // console.log(position);
+    const { deviceId, token, playlistId } = this.state;
+    fetch("https://api.spotify.com/v1/me/player/play?device_id=" + deviceId, {
+      method: "PUT",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        "context_uri": "spotify:playlist:" + playlistId,
+        "offset": {
+          "uri": uri
+        },
+        "position_ms": position
       }),
     });
   }

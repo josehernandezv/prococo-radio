@@ -1,0 +1,13 @@
+.titleCell {
+    display: flex;
+    flex-direction: row;
+    text-align: start;
+    align-items: center;
+}
+
+.titleCell img {
+    height: 42px;
+    width: 42px;
+    margin-right: 16px;
+    border-radius: 8px;
+}

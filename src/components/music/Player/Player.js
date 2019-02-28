@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Fab from '@material-ui/core/Fab';
 import FullScreenContent from './FullScreenContent';
 import classes from './Player.module.css';
+import Hidden from '@material-ui/core/Hidden';
 
 const player = props => {
     const [ isExpanded, setIsExpanded ] = useState(false);
@@ -25,17 +26,19 @@ const player = props => {
                 )}
             </div>
             <div className={ classes.bottomBar }>
-                <div className={ classes.leftControls }>
-                    <img src={ props.albumArt } alt="album"/>
-                    <div>
-                        <Typography variant="body1">
-                            { props.trackName }
-                        </Typography>
-                        <Typography variant="caption">
-                            { props.artist }
-                        </Typography>
+                <Hidden xsDown>
+                    <div className={ classes.leftControls }>
+                        <img src={ props.albumArt } alt="album"/>
+                        <div>
+                            <Typography variant="body1">
+                                { props.trackName }
+                            </Typography>
+                            <Typography variant="caption">
+                                { props.artist }
+                            </Typography>
+                        </div>
                     </div>
-                </div>
+                </Hidden>
                 <div className={ classes.centerControls }>
                     <IconButton aria-label="Previous" onClick={ props.onPrevious }>
                         <Icon>skip_previous</Icon>
@@ -48,17 +51,19 @@ const player = props => {
                         <Icon>skip_next</Icon>
                     </IconButton>
                 </div>
-                <div className={ classes.rightControls }>
-                    <IconButton aria-label="Show" onClick={ toggleExpanded } className={ classes.expandButton }>
-                        <Icon>keyboard_arrow_up</Icon>
-                    </IconButton>
-                    <IconButton aria-label="Mute" onClick={ props.onSoundClick }>
-                        <Icon>{ props.isMute ? 'volume_off' : 'volume_up' }</Icon>
-                    </IconButton>
-                    <IconButton aria-label="Shuffle" color={ props.isShuffle ? 'primary' : 'default' } onClick={ props.onShuffleClick }>
-                        <Icon>shuffle</Icon>
-                    </IconButton>
-                </div>
+                <Hidden xsDown>
+                    <div className={ classes.rightControls }>
+                        <IconButton aria-label="Show" onClick={ toggleExpanded } className={ classes.expandButton }>
+                            <Icon>keyboard_arrow_up</Icon>
+                        </IconButton>
+                        <IconButton aria-label="Mute" onClick={ props.onSoundClick }>
+                            <Icon>{ props.isMute ? 'volume_off' : 'volume_up' }</Icon>
+                        </IconButton>
+                        <IconButton aria-label="Shuffle" color={ props.isShuffle ? 'primary' : 'default' } onClick={ props.onShuffleClick }>
+                            <Icon>shuffle</Icon>
+                        </IconButton>
+                    </div>
+                </Hidden>
             </div>
             
         </Paper>

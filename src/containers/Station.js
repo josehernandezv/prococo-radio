@@ -28,7 +28,7 @@ class Station extends Component {
     shuffle: false,
     currentTrack: null,
     room: "",
-    socket: socketIOClient(window.location.hostname.concat(":3001"))
+    socket: socketIOClient(window.location.origin.concat(":3001"))
   }
 
   componentDidMount() {
@@ -37,6 +37,7 @@ class Station extends Component {
 
     const { socket } = this.state;
     console.log(socket);
+    console.log(window.location.origin.concat(":3001"));
 
     let params = new URLSearchParams(window.location.search);
     let accessToken = params.get('token');

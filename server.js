@@ -1,14 +1,22 @@
 const express = require('express')
-const http = require('http')
+const http = require('https')
 const socketIO = require('socket.io')
+const fs = require('fs');
 
 // our localhost port
 const port = 3001
 
 const app = express()
 
+var key = fs.readFileSync('./selfsigned.key');
+var cert = fs.readFileSync('./selfsigned.crt');
+var options = {
+    key: key,
+    cert: cert
+};
+
 // our server instance
-const server = http.createServer(app)
+const server = http.createServer(options, app)
 
 // This creates our socket using the instance of the server
 const io = socketIO(server)

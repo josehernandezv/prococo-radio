@@ -41,7 +41,7 @@ const Layout = props => {
                 <div>
                     <CssBaseline />
                     <Navbar />
-                    <main className={classes.content}>
+                    <main>
                         {/* <div className={classes.toolbar} /> */}
                         { props.children }
                     </main>

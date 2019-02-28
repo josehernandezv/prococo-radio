@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // import './App.css';
 import Button from '@material-ui/core/Button';
 import Player from '../components/music/Player';
+import Playlist from '../components/music/Playlist';
 
 class Station extends Component {
 
@@ -23,7 +24,8 @@ class Station extends Component {
     progress: 0,
     playlistId: 0,
     mute: false,
-    shuffle: false
+    shuffle: false,
+    currentTrack: null
   }
   
   componentDidMount() {
@@ -147,7 +149,8 @@ class Station extends Component {
         albumName,
         albumArt,
         artistName,
-        playing
+        playing,
+        currentTrack
       });
     }
   }
@@ -298,21 +301,13 @@ class Station extends Component {
       shuffle
     } = this.state;
 
-    let songs = null;
-    if (playlist) {
-      songs = (
-        <ul className="playlist">
-          { playlist.tracks.items.map(({track}) => {
-            return (
-              <li key={ track.id } onClick={() => this.playSong(track.uri) }>{ track.name }</li>
-            )
-          })}
-        </ul>
-      )
-    }
-  
     return (
       <div className="App">
+        <Playlist 
+          tracks={playlist ? playlist.tracks.items : []}
+          onPlay={ this.playSong }
+          currentTrackId={this.state.currentTrack ? this.state.currentTrack.id : '' }
+        />
         <div className="App-header">
         <Player 
           artist={ artistName}
@@ -330,21 +325,11 @@ class Station extends Component {
         {error && <p>Error: {error}</p>}
         {loggedIn ?
         (<div>
-          <img alt={trackName} src={albumArt}/>
-          <p>Artist: {artistName}</p>
-          <p>Track: {trackName}</p>
-          <p>Album: {albumName}</p>
           <div className="progress-bar">
             <progress className="progress" value={progress} max="100"></progress>
             <span className="start-time">{this.convertMs(position)}</span>
             <span className="end-time">{this.convertMs(duration)}</span>
           </div>
-          {/* <p>
-            <Button variant="contained" color="primary" className="test-button" onClick={() => this.onPrevClick()}><i className="material-icons">skip_previous</i></Button>
-            <Button variant="contained" color="secondary" className="test-button" onClick={() => this.onPlayClick()}><i className="material-icons">{playing ? "pause" : "play_arrow"}</i></Button>
-            <Button variant="contained" color="primary" className="test-button" onClick={() => this.onNextClick()}><i className="material-icons">skip_next</i></Button>
-          </p> */}
-          { songs }
         </div>)
         :
         (<div>

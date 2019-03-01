@@ -1,18 +1,14 @@
 const express = require('express')
-const http = require('https')
+const http = require('http')
 const socketIO = require('socket.io')
-const fs = require('fs');
 
 // our localhost port
-const port = 3001
+const port = process.env.PORT || 3001
 
 const app = express()
 
-var key = fs.readFileSync('./selfsigned.key');
-var cert = fs.readFileSync('./selfsigned.crt');
 var options = {
-    key: key,
-    cert: cert
+    transports: ['polling', 'websocket']
 };
 
 // our server instance

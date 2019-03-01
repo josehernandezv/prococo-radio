@@ -1,21 +1,9 @@
+const path = require('path')
 const express = require('express')
-const http = require('http')
-const socketIO = require('socket.io')
-
-// our localhost port
-const port = process.env.PORT || 3001
-
 const app = express()
-
-var options = {
-    transports: ['polling', 'websocket']
-};
-
-// our server instance
-const server = http.createServer(options, app)
-
-// This creates our socket using the instance of the server
-const io = socketIO(server)
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
+const port = process.env.PORT || 8080
 
 /******************************************************
                    SOCKET.IO

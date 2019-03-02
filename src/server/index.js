@@ -5,12 +5,12 @@ const server = require('http').Server(app)
 const io = require('socket.io')(server)
 const port = process.env.PORT || 8080
 
-// console.log(path.join(__dirname, '../../public/index.html'))
-// app.use(express.static(path.join(__dirname, '../../build')))
+console.log(path.join(__dirname, '../../public/index.html'))
+app.use(express.static(path.join(__dirname, '../../build')))
 
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, '../../public/index.html'))
-// })
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../public/index.html'))
+})
 /******************************************************
                    SOCKET.IO
 ******************************************************/

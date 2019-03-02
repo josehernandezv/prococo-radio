@@ -21,6 +21,14 @@ const playlist = props => {
     
     return (
         <>
+            <div className={ classes.users }>
+                Usuarios conectados
+                { props.users.map(item => (
+                    <div>
+                        <span>{ item.name }</span>
+                    </div>
+                ))}
+            </div>
             <Searchbar 
                 text={ searchText }
                 onTextChanged={ searchTextChangedHandler }

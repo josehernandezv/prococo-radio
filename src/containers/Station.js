@@ -28,7 +28,7 @@ class Station extends Component {
     shuffle: false,
     currentTrack: null,
     room: "",
-    socket: socketIOClient(window.location.hostname.concat(':8080')),
+    socket: socketIOClient(),
     userID: "",
     username: ""
   }
@@ -199,7 +199,8 @@ class Station extends Component {
       socket.emit('send_track', {
         track: state.track_window.current_track,
         position: state.position,
-        playlist: this.state.playlistId
+        playlist: this.state.playlistId,
+        username: this.state.username
       });
 
       this.setState({
@@ -336,6 +337,7 @@ class Station extends Component {
     // console.log(uri);
     // console.log(position);
     const { deviceId, token, playlistId } = this.state;
+    console.log(deviceId);
     fetch("https://api.spotify.com/v1/me/player/play?device_id=" + deviceId, {
       method: "PUT",
       headers: {
@@ -376,13 +378,15 @@ class Station extends Component {
       playing,
       playlist,
       mute,
-      shuffle
+      shuffle,
+      room
     } = this.state;
 
     return (
       <div className="App">
         <Playlist 
           tracks={playlist ? playlist.tracks.items : []}
+          users={room ? room.users : []}
           onPlay={ this.playSong }
           currentTrackId={this.state.currentTrack ? this.state.currentTrack.id : '' }
         />

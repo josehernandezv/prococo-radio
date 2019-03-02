@@ -28,7 +28,9 @@ class Station extends Component {
     shuffle: false,
     currentTrack: null,
     room: "",
-    socket: socketIOClient()
+    socket: socketIOClient(window.location.hostname.concat(':8080')),
+    userID: "",
+    username: ""
   }
 
   componentDidMount() {
@@ -41,6 +43,8 @@ class Station extends Component {
     let params = new URLSearchParams(window.location.search);
     let accessToken = params.get('token');
     let playlist = params.get('playlist');
+    let userID = params.get('userid');
+    let username = params.get('username');
 
     if(accessToken) {
       this.setState({ token: accessToken }, () => { this.handleLogin(); });
@@ -53,22 +57,28 @@ class Station extends Component {
       socket.emit('new_room', playlist);
     }
 
-    socket.on('current_room', (room) => { 
-      console.log("Current Room");
-      console.log(room);
-      this.setState({ room: room }, () => {
-        socket.emit('join_room', socket.id, this.state.room);
-      });
+    if(userID) {
+      this.setState({ userID: userID });
+    }
+
+    if(username) {
+      this.setState({ username: username });
+    }
+
+    socket.on("set_current_room", rooms => {
+      let currentRoom = rooms.find(item => item.name === playlist);
+      this.setState({room: currentRoom}, () => { socket.emit('join_room', userID, username, this.state.room.name); });
     });
 
-    socket.on('updated_room_list', (rooms) => {
-      console.log("Room List");
-      console.log(rooms);
-      // this.setState({rooms: rooms});
+    socket.on("updated_room_list", rooms => {
+      // console.log("Room List");
+      // console.log(rooms);
+      let updatedRoom = rooms.find(item => item.name === playlist);
+      this.setState({room: updatedRoom}, () => { console.log(this.state.room) });
     });
 
     socket.on("receive_track", data => {
-      console.log(data);
+      // console.log(data);
       if(this.player && this.state.playlistId === data.playlist) {
         if(this.state.trackName !== data.track.name) {
           console.log("changing song");

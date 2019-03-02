@@ -13,7 +13,9 @@ const PROCOCO_FOREVER_ID = '1zXO27kKYMS0drNPc3R6eD';
 class Home extends Component {
 
     state = {
-        token: ""
+        token: "",
+        userID: "",
+        username: ""
     }
 
     componentDidMount() {
@@ -30,9 +32,29 @@ class Home extends Component {
         if (this.state.token === "") {
             SpotifyFunctions.logInWithSpotify();
         } else {
+            this.fetchCurrentUser();
             this.props.history.replace("/#");
         }
     }
+
+    fetchCurrentUser = () => {
+        const { token } = this.state;
+
+        fetch("https://api.spotify.com/v1/me", {
+            headers: {
+                authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        })
+        .then(res => res.json())
+        .then(data => {
+            this.setState({ 
+                username: data.display_name,
+                userID: data.id
+            })
+        });
+    }
+
 
     render() {
         return (
@@ -47,7 +69,7 @@ class Home extends Component {
                 </div>
                 <Grid container spacing={40} className={ classes.cardsContainer }>
                     <Grid item xs={12} sm={6}>
-                        <Link to={`/station?playlist=${ PROCOCO_ID }&token=${ this.state.token }`}>
+                        <Link to={`/station?playlist=${ PROCOCO_ID }&token=${ this.state.token }&userid=${ this.state.userID }&username=${ this.state.username }`}>
                             <Card 
                                 title="Prococo"
                                 variant="primary"
@@ -55,7 +77,7 @@ class Home extends Component {
                         </Link>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <Link to={`/station?playlist=${ PROCOCO_FOREVER_ID }&token=${ this.state.token }`}>
+                        <Link to={`/station?playlist=${ PROCOCO_FOREVER_ID }&token=${ this.state.token }&userid=${ this.state.userID }&username=${ this.state.username }`}>
                             <Card 
                                 title="Prococo forever"
                                 variant="secondary"

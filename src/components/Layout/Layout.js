@@ -8,7 +8,11 @@ import { withStyles } from '@material-ui/core/styles';
 import theme from './theme';
 import Navbar from '../navigation/Navbar';
 
-const generateClassName = createGenerateClassName();
+const generateClassName = createGenerateClassName({
+    dangerouslyUseGlobalCSS: true,
+    productionPrefix: 'c',
+});
+
 const jss = create({
   ...jssPreset(),
   // We define a custom insertion point that JSS will look for injecting the styles in the DOM.
@@ -16,8 +20,6 @@ const jss = create({
 });
 
 const styles = theme => ({
-    root: {
-    },
     toolbar: {
         display: 'flex',
         alignItems: 'center',
@@ -36,7 +38,7 @@ const Layout = props => {
     return (
         <JssProvider jss={jss} generateClassName={generateClassName}>
             <MuiThemeProvider theme={theme}>
-                <div className={ classes.root }>
+                <div>
                     <CssBaseline />
                     <Navbar />
                     <main className={classes.content}>

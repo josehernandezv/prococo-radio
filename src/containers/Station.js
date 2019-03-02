@@ -321,6 +321,9 @@ class Station extends Component {
           onShuffleClick={ this.onShuffleClick }
           isMute={ mute }
           isShuffle={ shuffle }
+          songProgress={ progress }
+          songPosition={ position }
+          songDuration={ duration }
         />
         {error && <p>Error: {error}</p>}
         {loggedIn ?

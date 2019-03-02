@@ -6,8 +6,10 @@ import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import Fab from '@material-ui/core/Fab';
 import FullScreenContent from './FullScreenContent';
-import classes from './Player.module.css';
 import Hidden from '@material-ui/core/Hidden';
+import Progressbar from './Progressbar';
+import classes from './Player.module.css';
+
 
 const player = props => {
     const [ isExpanded, setIsExpanded ] = useState(false);
@@ -25,6 +27,11 @@ const player = props => {
                     />
                 )}
             </div>
+            <Progressbar 
+                progress={ props.songProgress }
+                startTime={ props.songPosition }
+                endTime={ props.songDuration }
+            />
             <div className={ classes.bottomBar }>
                 <Hidden xsDown>
                     <div className={ classes.leftControls }>
@@ -78,6 +85,9 @@ player.propTypes = {
     onNext: PropTypes.func.isRequired,
     onTogglePlay: PropTypes.func.isRequired,
     isPlaying: PropTypes.bool.isRequired,
+    songProgress: PropTypes.number.isRequired,
+    songPosition: PropTypes.number.isRequired,
+    songDuration: PropTypes.number.isRequired,
 };
 
 export default player;

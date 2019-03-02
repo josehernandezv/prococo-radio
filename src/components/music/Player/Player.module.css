@@ -106,3 +106,12 @@
 .shuffle {
     color: #651fff;
 }
+
+.progressContainer {
+    width: 100%;
+    height: 4px;
+}
+
+.progress {
+    height: 100%;
+}

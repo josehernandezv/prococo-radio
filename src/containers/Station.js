@@ -308,7 +308,7 @@ class Station extends Component {
           onPlay={ this.playSong }
           currentTrackId={this.state.currentTrack ? this.state.currentTrack.id : '' }
         />
-        <div className="App-header">
+       
         <Player 
           artist={ artistName}
           trackName={ trackName }
@@ -326,22 +326,6 @@ class Station extends Component {
           songDuration={ duration }
         />
         {error && <p>Error: {error}</p>}
-        {loggedIn ?
-        (<div>
-          <div className="progress-bar">
-            <progress className="progress" value={progress} max="100"></progress>
-            <span className="start-time">{this.convertMs(position)}</span>
-            <span className="end-time">{this.convertMs(duration)}</span>
-          </div>
-        </div>)
-        :
-        (<div>
-          <p>
-            Loading...
-          </p>
-        </div>)
-        }
-        </div>
       </div>
     );
   }

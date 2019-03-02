@@ -31,6 +31,7 @@ const player = props => {
                 progress={ props.songProgress }
                 startTime={ props.songPosition }
                 endTime={ props.songDuration }
+                isExpanded={ isExpanded }
             />
             <div className={ classes.bottomBar }>
                 <Hidden xsDown>

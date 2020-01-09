@@ -10,7 +10,7 @@ import moment from 'moment';
 import Searchbar from './Searchbar';
 import classes from './Playlist.module.css';
 
-const playlist = props => {
+const Playlist = props => {
     const [searchText, setSearchText] = useState('');
 
     const searchTextChangedHandler = event => {
@@ -72,10 +72,10 @@ const filterTracks = (tracks, searchText) => {
     })
 }
 
-playlist.propTypes = {
+Playlist.propTypes = {
     tracks: PropTypes.array.isRequired,
     onPlay: PropTypes.func,
     currentTrackId: PropTypes.string
 };
 
-export default React.memo(playlist);
+export default React.memo(Playlist);

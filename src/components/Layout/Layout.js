@@ -1,9 +1,9 @@
 import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import JssProvider from 'react-jss/lib/JssProvider';
 import { create } from 'jss';
 import { createGenerateClassName, jssPreset } from '@material-ui/core/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+import { StylesProvider } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 import theme from './theme';
 import Navbar from '../navigation/Navbar';
@@ -29,14 +29,14 @@ const styles = theme => ({
     },
     content: {
         flexGrow: 1,
-        padding: theme.spacing.unit * 3,
+        padding: theme.spacing(3),
     },
 });
 
 const Layout = props => {
     const { classes } = props;
     return (
-        <JssProvider jss={jss} generateClassName={generateClassName}>
+        <StylesProvider jss={jss} generateClassName={generateClassName}>
             <MuiThemeProvider theme={theme}>
                 <div>
                     <CssBaseline />
@@ -47,7 +47,7 @@ const Layout = props => {
                     </main>
                 </div>
             </MuiThemeProvider>
-        </JssProvider>
+        </StylesProvider>
     );
 }
 

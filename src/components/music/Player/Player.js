@@ -11,7 +11,7 @@ import Progressbar from './Progressbar';
 import classes from './Player.module.css';
 
 
-const player = props => {
+const Player = props => {
     const [ isExpanded, setIsExpanded ] = useState(false);
 
     const toggleExpanded = () => setIsExpanded(!isExpanded);
@@ -78,7 +78,7 @@ const player = props => {
     );
 };
 
-player.propTypes = {
+Player.propTypes = {
     trackName: PropTypes.string.isRequired,
     albumArt: PropTypes.string.isRequired,
     artist: PropTypes.string.isRequired,
@@ -91,4 +91,4 @@ player.propTypes = {
     songDuration: PropTypes.number.isRequired,
 };
 
-export default player;
+export default Player;

@@ -45,7 +45,7 @@ class Home extends Component {
                         Escoge la playlist que quieras escuchar. Puedes escuchar música sincronizada con tus amigos y familia.
                     </Typography>
                 </div>
-                <Grid container spacing={40} className={ classes.cardsContainer }>
+                <Grid container spacing={10} className={ classes.cardsContainer }>
                     <Grid item xs={12} sm={6}>
                         <Link to={`/station?playlist=${ PROCOCO_ID }&token=${ this.state.token }`}>
                             <Card 

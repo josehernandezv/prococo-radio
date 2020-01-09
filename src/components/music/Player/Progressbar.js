@@ -6,13 +6,13 @@ import { withTheme } from '@material-ui/core/styles';
 import classes from './Player.module.css';
 
 
-const progressbar = props => {
+const Progressbar = props => {
     const { primary } = props.theme.palette;
 
     let expandedStyles = null;
     if (props.isExpanded) {
         expandedStyles = {
-            padding: props.theme.spacing.unit * 3,
+            padding: props.theme.spacing(3),
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center'
@@ -53,11 +53,11 @@ const convertMs = time=> {
     return new Date(time).toTimeString().replace(/.*(\d{2}:\d{2}).*/, "$1");
 }
 
-progressbar.propTypes = {
+Progressbar.propTypes = {
     progress: PropTypes.number,
     startTime: PropTypes.number,
     endTime: PropTypes.number,
     isExpanded: PropTypes.bool
 };
 
-export default withTheme()(progressbar);
+export default withTheme(Progressbar);

@@ -5,6 +5,10 @@
   "dependencies": {
     "@material-ui/core": "^4.8.3",
     "@material-ui/icons": "^4.5.1",
+    "firebase": "^7.6.2",
+    "firestorter": "^2.0.1",
+    "mobx": "^5.15.1",
+    "mobx-react": "^6.1.4",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.2.0",

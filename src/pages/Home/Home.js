@@ -5,10 +5,13 @@ import Grid from '@material-ui/core/Grid';
 import Card from '../../components/ui/Card';
 import classes from './Home.module.css';
 import Container from '../../components/ui/Container';
-import * as SpotifyFunctions from '../../containers/Login.js'
+import * as SpotifyFunctions from '../../lib/spotify'
+import {observer} from 'mobx-react';
+import { playlists } from '../../stores/MusicStore'
+// import firebase from '../../lib/firebase'
 
-const PROCOCO_ID = '62tndRYihkE8fGyVDu3VhY';
-const PROCOCO_FOREVER_ID = '1zXO27kKYMS0drNPc3R6eD';
+// const PROCOCO_ID = '62tndRYihkE8fGyVDu3VhY';
+// const PROCOCO_FOREVER_ID = '1zXO27kKYMS0drNPc3R6eD';
 
 class Home extends Component {
 
@@ -24,6 +27,13 @@ class Home extends Component {
         } else {
             this.handleLogin();
         }
+
+        // firebase.firestore().collection("songs").get().then(function(querySnapshot) {
+        //     querySnapshot.forEach(function(doc) {
+        //         // doc.data() is never undefined for query doc snapshots
+        //         console.log(doc.id, " => ", doc.data());
+        //     });
+        // });
     }
 
     handleLogin = () => {
@@ -35,6 +45,8 @@ class Home extends Component {
     }
 
     render() {
+        const { docs } = playlists;
+        
         return (
             <Container> 
                 <div className={ classes.header }>
@@ -46,22 +58,16 @@ class Home extends Component {
                     </Typography>
                 </div>
                 <Grid container spacing={10} className={ classes.cardsContainer }>
-                    <Grid item xs={12} sm={6}>
-                        <Link to={`/station?playlist=${ PROCOCO_ID }&token=${ this.state.token }`}>
-                            <Card 
-                                title="Prococo"
-                                variant="primary"
-                            />
-                        </Link>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <Link to={`/station?playlist=${ PROCOCO_FOREVER_ID }&token=${ this.state.token }`}>
-                            <Card 
-                                title="Prococo forever"
-                                variant="secondary"
-                            />
-                        </Link>
-                    </Grid>
+                    { docs.map((item, index) => (
+                            <Grid item xs={12} sm={6} key={item.id}>
+                                <Link to={`/station?playlist=${ item.data.spotifyId }&token=${ this.state.token }`}>
+                                    <Card 
+                                        title={item.data.name}
+                                        variant={index === 0 ? "primary" : "secondary"}
+                                    />
+                                </Link>
+                            </Grid>
+                    ))}
                 </Grid>
                     {/* <Card 
                         title="Youtube"
@@ -72,4 +78,4 @@ class Home extends Component {
     }
 }
 
-export default Home;
+export default observer(Home);

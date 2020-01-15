@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-// import './App.css';
-import Button from '@material-ui/core/Button';
-import Player from '../components/music/Player';
-import Playlist from '../components/music/Playlist';
+import Player from '../../components/music/Player';
+import Playlist from '../../components/music/Playlist';
 
 class Station extends Component {
 

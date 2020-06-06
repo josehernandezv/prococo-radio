@@ -6,9 +6,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Hidden from '@material-ui/core/Hidden';
-import moment from 'moment';
 import Searchbar from './Searchbar';
-import classes from './Playlist.module.css';
+import Track from './Track';
+import { useInfiniteScroll } from 'react-infinite-scroll-hook';
 
 const Playlist = (props) => {
     const [searchText, setSearchText] = useState('');
@@ -19,7 +19,12 @@ const Playlist = (props) => {
 
     const tracks = filterTracks(props.tracks, searchText);
 
-    console.log(tracks);
+    const infiniteRef = useInfiniteScroll({
+        loading: props.loading,
+        hasNextPage: !!props.next,
+        onLoadMore: props.onLoadMore,
+        scrollContainer: 'window',
+    });
 
     return (
         <>
@@ -38,43 +43,14 @@ const Playlist = (props) => {
                         </Hidden>
                     </TableRow>
                 </TableHead>
-                <TableBody>
+                <TableBody ref={infiniteRef}>
                     {tracks.map((item) => (
-                        <TableRow
+                        <Track
                             key={item.track.id}
-                            onClick={() => props.onPlay(item.track.uri)}
+                            data={item}
                             selected={props.currentTrackId === item.track.id}
-                            hover
-                        >
-                            <TableCell>
-                                <div className={classes.titleCell}>
-                                    <img
-                                        src={item.track.album.images[0].url}
-                                        alt="album"
-                                    />
-                                    {item.track.name}
-                                </div>
-                            </TableCell>
-                            <Hidden xsDown>
-                                <TableCell align="right">
-                                    {item.track.artists[0].name}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {item.track.album.name}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {moment
-                                        .utc(
-                                            moment
-                                                .duration(
-                                                    item.track.duration_ms
-                                                )
-                                                .as('milliseconds')
-                                        )
-                                        .format('mm:ss')}
-                                </TableCell>
-                            </Hidden>
-                        </TableRow>
+                            onPlay={() => props.onPlay(item.track.uri)}
+                        />
                     ))}
                 </TableBody>
             </Table>
@@ -97,6 +73,8 @@ const filterTracks = (tracks, searchText) => {
 Playlist.propTypes = {
     tracks: PropTypes.array.isRequired,
     onPlay: PropTypes.func,
+    onLoadMore: PropTypes.func,
+    loading: PropTypes.bool,
     currentTrackId: PropTypes.string,
 };
 

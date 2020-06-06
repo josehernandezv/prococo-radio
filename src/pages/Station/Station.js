@@ -17,14 +17,17 @@ const Station = () => {
 
     return (
         <PlaylistTracks id={playlistId}>
-            {(tracks, loading, error) =>
-                tracks &&
-                tracks.data && (
+            {({ data, loadMoreData, loading }) =>
+                data && (
                     <>
                         <Playlist
-                            tracks={tracks.data.items}
+                            tracks={data.items}
                             onPlay={playSong}
                             currentTrackId={currentTrack ? currentTrack.id : ''}
+                            onLoadMore={loadMoreData}
+                            total={data.total}
+                            next={data.next}
+                            loading={loading}
                         />
                         <SpotifyPlayer
                             token={token}

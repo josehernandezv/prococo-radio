@@ -10,20 +10,22 @@ import moment from 'moment';
 import Searchbar from './Searchbar';
 import classes from './Playlist.module.css';
 
-const Playlist = props => {
+const Playlist = (props) => {
     const [searchText, setSearchText] = useState('');
 
-    const searchTextChangedHandler = event => {
+    const searchTextChangedHandler = (event) => {
         setSearchText(event.target.value);
-    }
+    };
 
     const tracks = filterTracks(props.tracks, searchText);
-    
+
+    console.log(tracks);
+
     return (
         <>
-            <Searchbar 
-                text={ searchText }
-                onTextChanged={ searchTextChangedHandler }
+            <Searchbar
+                text={searchText}
+                onTextChanged={searchTextChangedHandler}
             />
             <Table>
                 <TableHead>
@@ -37,23 +39,40 @@ const Playlist = props => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    { tracks.map(item => (
-                        <TableRow 
-                            key={ item.id }
+                    {tracks.map((item) => (
+                        <TableRow
+                            key={item.track.id}
                             onClick={() => props.onPlay(item.track.uri)}
                             selected={props.currentTrackId === item.track.id}
                             hover
                         >
-                            <TableCell >
-                                <div className={ classes.titleCell }>
-                                    <img src={ item.track.album.images[0].url } alt="album" />
-                                    { item.track.name }
+                            <TableCell>
+                                <div className={classes.titleCell}>
+                                    <img
+                                        src={item.track.album.images[0].url}
+                                        alt="album"
+                                    />
+                                    {item.track.name}
                                 </div>
                             </TableCell>
                             <Hidden xsDown>
-                                <TableCell align="right">{ item.track.artists[0].name }</TableCell>
-                                <TableCell align="right">{ item.track.album.name }</TableCell>
-                                <TableCell align="right">{moment.utc(moment.duration(item.track.duration_ms).as('milliseconds')).format('mm:ss')}</TableCell>
+                                <TableCell align="right">
+                                    {item.track.artists[0].name}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {item.track.album.name}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {moment
+                                        .utc(
+                                            moment
+                                                .duration(
+                                                    item.track.duration_ms
+                                                )
+                                                .as('milliseconds')
+                                        )
+                                        .format('mm:ss')}
+                                </TableCell>
                             </Hidden>
                         </TableRow>
                     ))}
@@ -64,18 +83,21 @@ const Playlist = props => {
 };
 
 const filterTracks = (tracks, searchText) => {
-    return tracks.filter(item => {
+    return tracks.filter((item) => {
         return (
-            item.track.name.toLowerCase().search(searchText.toLowerCase()) !== -1 ||
-            item.track.artists[0].name.toLowerCase().search(searchText.toLowerCase()) !== -1
+            item.track.name.toLowerCase().search(searchText.toLowerCase()) !==
+                -1 ||
+            item.track.artists[0].name
+                .toLowerCase()
+                .search(searchText.toLowerCase()) !== -1
         );
-    })
-}
+    });
+};
 
 Playlist.propTypes = {
     tracks: PropTypes.array.isRequired,
     onPlay: PropTypes.func,
-    currentTrackId: PropTypes.string
+    currentTrackId: PropTypes.string,
 };
 
 export default React.memo(Playlist);

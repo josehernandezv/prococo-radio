@@ -1,3 +1,3 @@
-import Station from './Station'
+import Station from './Station';
 
-export default Station
+export default Station;

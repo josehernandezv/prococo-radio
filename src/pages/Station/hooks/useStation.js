@@ -2,12 +2,14 @@ import { useState, useEffect, useContext } from 'react';
 import { playTrackFromPlaylist } from '../../../lib/spotify';
 import { useHistory } from 'react-router-dom';
 import { SpotifyApiContext } from 'react-spotify-api';
+import useUserOnline from './useUserOnline';
 
 const useStation = () => {
     const [playlistId, setPlaylistId] = useState(null);
     const [currentTrack, setCurrentTrack] = useState(null);
     const [deviceId, setDeviceId] = useState(null);
     const history = useHistory();
+    useUserOnline(playlistId);
 
     const token = useContext(SpotifyApiContext);
 
@@ -22,8 +24,6 @@ const useStation = () => {
     }, [history]);
 
     const updateStatus = (status) => {
-        console.log(status);
-
         if (status.track !== currentTrack) {
             setCurrentTrack(status.track);
         }

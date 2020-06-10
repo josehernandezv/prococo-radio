@@ -1,0 +1,7 @@
+.container {
+    display: flex;
+}
+
+.sidebar {
+    min-width: 300px;
+}

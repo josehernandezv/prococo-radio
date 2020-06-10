@@ -4,7 +4,8 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Card from '../../components/ui/Card';
 import classes from './Home.module.css';
-import Container from '../../components/ui/Container';
+// import Container from '../../components/ui/Container';
+import Container from '@material-ui/core/Container';
 
 const PROCOCO_ID = '62tndRYihkE8fGyVDu3VhY';
 const PROCOCO_FOREVER_ID = '1zXO27kKYMS0drNPc3R6eD';

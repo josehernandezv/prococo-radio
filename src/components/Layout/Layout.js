@@ -14,12 +14,12 @@ const generateClassName = createGenerateClassName({
 });
 
 const jss = create({
-  ...jssPreset(),
-  // We define a custom insertion point that JSS will look for injecting the styles in the DOM.
-  insertionPoint: document.getElementById('jss-insertion-point'),
+    ...jssPreset(),
+    // We define a custom insertion point that JSS will look for injecting the styles in the DOM.
+    insertionPoint: document.getElementById('jss-insertion-point'),
 });
 
-const styles = theme => ({
+const styles = (theme) => ({
     toolbar: {
         display: 'flex',
         alignItems: 'center',
@@ -33,7 +33,7 @@ const styles = theme => ({
     },
 });
 
-const Layout = props => {
+const Layout = (props) => {
     const { classes } = props;
     return (
         <StylesProvider jss={jss} generateClassName={generateClassName}>
@@ -43,12 +43,12 @@ const Layout = props => {
                     <Navbar />
                     <main className={classes.content}>
                         {/* <div className={classes.toolbar} /> */}
-                        { props.children }
+                        {props.children}
                     </main>
                 </div>
             </MuiThemeProvider>
         </StylesProvider>
     );
-}
+};
 
 export default withStyles(styles)(Layout);

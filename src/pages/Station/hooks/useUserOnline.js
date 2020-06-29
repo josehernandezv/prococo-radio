@@ -34,6 +34,8 @@ const useUserOnline = (playlistId) => {
             };
         }
     }, [user, playlistId, firestore]);
+
+    return user;
 };
 
 export default useUserOnline;

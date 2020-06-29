@@ -38,7 +38,8 @@ const Station = () => {
                             <SpotifyPlayer
                                 token={token}
                                 uris={['spotify:playlist:' + playlistId]}
-                                autoPlay
+                                // autoPlay
+                                play
                                 callback={updateStatus}
                             />
                         </div>

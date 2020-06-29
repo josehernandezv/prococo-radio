@@ -8,24 +8,29 @@ import RadioIcon from '@material-ui/icons/Radio';
 import { Link } from 'react-router-dom';
 import classes from './Navbar.module.css';
 
-const navbar = props => (
-    <AppBar position="static" color="default" >
+const navbar = (props) => (
+    <AppBar position="static" color="default">
         <Toolbar>
-            <Button size="large" component={Link} to="/">
-                <RadioIcon className={ classes.logoIcon }/>
+            <Button size="large" onClick={() => window.location.reload()}>
+                <RadioIcon className={classes.logoIcon} />
                 Prococo Radio
             </Button>
-            <div className={ classes.grow }>
-                <Button color="inherit" onClick={ props.onLogout } component={Link} to="/">Salir</Button>
+            <div className={classes.grow}>
+                <Button
+                    color="inherit"
+                    onClick={props.onLogout}
+                    component={Link}
+                    to="/"
+                >
+                    Salir
+                </Button>
             </div>
-            
         </Toolbar>
     </AppBar>
 );
 
-
 navbar.propTypes = {
-    onLogout: PropTypes.func
+    onLogout: PropTypes.func,
 };
 
 export default navbar;

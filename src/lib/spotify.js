@@ -52,6 +52,11 @@ export function getHashParams() {
 }
 
 export function playTrackFromPlaylist(token, deviceId, playlistId, uri) {
+    console.log(token);
+    console.log(deviceId);
+    console.log(playlistId);
+    console.log(uri);
+
     fetch('https://api.spotify.com/v1/me/player/play?device_id=' + deviceId, {
         method: 'PUT',
         headers: {
